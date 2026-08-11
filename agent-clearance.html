@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Clearance</title>
+<style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#111;color:#f5f5f5;min-height:100vh;padding:24px}
+  .wrap{max-width:560px;margin:auto}
+  .panel{border:1px solid #444;border-radius:20px;background:#171717;padding:24px}
+  .top{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:1px solid #444;padding-bottom:18px;margin-bottom:20px}
+  .eyebrow{font-size:11px;letter-spacing:.25em;color:#aaa}
+  h1,h2{margin:.3rem 0 0}
+  h1{font-size:28px}.badge{border:1px solid #666;border-radius:999px;padding:7px 11px;font-size:11px;white-space:nowrap}
+  p{color:#c8c8c8;line-height:1.5}
+  fieldset{border:1px solid #444;border-radius:14px;padding:15px;margin:14px 0}
+  legend{padding:0 7px;font-size:14px;font-weight:600}
+  label{display:block;padding:8px 0;color:#ddd;cursor:pointer}
+  input{margin-right:8px}
+  button{width:100%;border:0;border-radius:12px;padding:14px 16px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px}
+  .primary{background:#f5f5f5;color:#111}
+  .secondary{background:transparent;color:#f5f5f5;border:1px solid #666}
+  .error{text-align:center;color:#aaa;font-size:13px}
+  .hidden{display:none}
+  .check{width:64px;height:64px;border:2px solid #f5f5f5;border-radius:50%;display:grid;place-items:center;font-size:28px;margin:0 auto 18px}
+  .center{text-align:center}
+  .mission{border:1px solid #444;border-radius:14px;padding:18px;text-align:left;margin-top:22px}
+  .mission p{font-size:18px;color:#fff;margin-bottom:0}
+  .fine{font-size:11px;color:#777;text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <div class="top">
+      <div><div class="eyebrow">TOP SECRET</div><h1>AGENT CLEARANCE</h1></div>
+      <div class="badge">LEVEL 007</div>
+    </div>
+
+    <section id="quiz">
+      <p>Restricted party file detected. Tap the button below to receive your challenge.</p>
+      <button class="primary" id="startChallenge">🎯 REVEAL MY CHALLENGE</button>
+    </section>
+
+    <section id="granted" class="hidden center">
+      <div class="check">✓</div>
+      <div class="eyebrow">ACCESS GRANTED</div>
+      <h2>CHALLENGE UNLOCKED</h2>
+      <p>You have successfully unlocked your party challenge.</p>
+
+      <div class="mission">
+        <div class="eyebrow">YOUR CHALLENGE</div>
+        <p id="mission"></p>
+      </div>
+
+      <button class="secondary" id="another">🎯 GENERATE ANOTHER MISSION</button>
+      <div class="fine">For the game: keep drinks optional and follow everyone's limits.</div>
+    </section>
+  </div>
+</div>
+
+<script>
+const missions = [
+  "Take a sip of your drink while maintaining unbroken eye contact with someone for 5 seconds. If they laugh or look away first, they take 2 drinks. If you do, you take 2.",
+  "Get someone to do a dramatic toast with you. If they refuse, they take 2 drinks. If they do it, you both take 1.",
+  "Make someone laugh using only a facial expression. If they laugh, they take 2 drinks. If they don't, you take 2.",
+  "Convince someone to swap seats with you for one minute. If they agree, they take 1 drink. If they refuse, you take 2.",
+  "Give someone a completely unnecessary but very serious compliment. If they laugh, they take 1 drink. If they don't, you take 1.",
+  "Get someone to say the word “pineapple” without asking them to say it. If they say it, they take 2 drinks. If they catch you trying, you take 2.",
+  "Do your best celebrity impression and make someone guess who it is. If they guess correctly, you take 2 drinks. If they get it wrong, they take 2.",
+  "Start a group cheers and make at least three people join in. Everyone who joins takes 1 drink. If you can't get three people, you take 2.",
+  "Let the person next to you choose your next drink or non-alcoholic drink. If you refuse their choice, you take 2 drinks.",
+  "Tell the worst joke you know. If nobody laughs, you take 2 drinks. If someone laughs, they take 2.",
+  "Get someone to recreate a dramatic movie scene with you for 10 seconds. If they agree, you both take 1. If they refuse, they take 2.",
+  "Dance for 10 seconds like nobody is watching. Unfortunately, everyone is watching. Choose one person to judge you. If they rate you 7/10 or higher, they take 2 drinks. If lower, you take 2.",
+  "Ask someone to give you a new nickname and use it for the next 10 minutes. If you forget and use your real name, you take 2 drinks.",
+  "Get two people to synchronise a sip with you. If you pull it off, both of them take 1 drink. If you fail, you take 2.",
+  "Choose someone to challenge you to rock-paper-scissors. Winner gives 2 drinks to the loser.",
+  "Speak in an accent for the next minute without breaking character. If you break character, you take 2 drinks. If you survive the minute, choose someone to take 2.",
+  "Get someone to take the most ridiculous photo possible with you. If they agree, they both take 1. If they refuse, they take 2.",
+  "Find someone wearing the same colour as you and declare yourselves an elite team. You both take 1 drink for becoming an elite team.",
+  "Tell someone a completely believable fact about yourself and see if they believe it. If they believe you, they take 2 drinks. If they don’t, you take 2 drinks.",
+  "Make a toast to something completely ridiculous, such as surviving Monday. Choose someone to take 2 drinks if they refuse to join your toast.",
+  "Get someone to high-five you without saying the word “high-five.” If they do it, they take 1 drink. If you accidentally say it, you take 2.",
+  "Do a dramatic runway walk across the room. Choose a judge. If they give you 8/10 or higher, they take 2 drinks. If lower, you take 2.",
+  "Choose someone to answer a completely harmless but embarrassing question. If they refuse to answer, they take 2 drinks. If they answer, you both take 1.",
+  "Make someone smile without touching them or telling a joke. If you succeed, they take 2 drinks. If you fail, you take 2.",
+  "Challenge someone to a 10-second dance-off. The person with the least convincing moves takes 2 drinks."
+];
+
+function randomMission(){
+  document.getElementById("mission").textContent =
+    missions[Math.floor(Math.random() * missions.length)];
+}
+
+document.getElementById("startChallenge").addEventListener("click", () => {
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("granted").classList.remove("hidden");
+  randomMission();
+});
+
+document.getElementById("another").addEventListener("click", randomMission);
+</script>
+</body>
+</html>
